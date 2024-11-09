@@ -1,0 +1,31 @@
+services:
+  client:
+    container_name: client
+    build: ./client
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    command: serve -s build
+    depends_on:
+      - server
+
+  server:
+    container_name: server
+    build: ./server
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    command: uvicorn main:app --host 0.0.0.0 --port 8080
+
+  posrgres:
+    image: 'postgres:15'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
