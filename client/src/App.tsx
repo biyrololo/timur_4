@@ -10,7 +10,8 @@ import Finances from 'pages/Finances';
 
 function App() {
 
-  axios.defaults.baseURL = 'http://localhost:8000/';
+  // axios.defaults.baseURL = 'http://localhost:8000/';
+  axios.defaults.baseURL = 'http://193.200.74.131:8080/';
 
   return (
     <BrowserRouter>
