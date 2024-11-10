@@ -5,7 +5,9 @@ from models import Base
 from os import getenv
 
 # DATABASE_URL = getenv("DATABASE_URL")
-DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/postgres"
+# DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/postgres"
+# sqlite
+DATABASE_URL = "sqlite:///./sql_app.db"
 
 engine = create_engine(DATABASE_URL)
 

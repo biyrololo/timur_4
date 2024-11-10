@@ -7,7 +7,14 @@ class Statistic(Base):
     ads = Column(Integer)
     
 def get_statistic(db):
-    return db.query(Statistic).all()[-1]
+    a = db.query(Statistic).all()
+    if a is None:
+        return None
+    else:
+        if len(a) == 0:
+            return None
+        else:
+            return a[-1]
 
 def set_statistic(db, ads):
     # add ads to first
