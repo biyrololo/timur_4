@@ -1,9 +1,13 @@
 import { Typography } from '@mui/material'
 import './Header.css'
+import { useNavigate } from 'react-router-dom'
 
 export default function Header() {
+
+    const navigate = useNavigate()
+
     return (
-        <header>
+        <header onClick={() => navigate('/')}>
             <div>
                 <img src="/fidelis.jpg" 
                 alt="" />

@@ -14,7 +14,8 @@ engine = create_engine(DATABASE_URL)
 Base.metadata.create_all(engine)
 
 # drop all tables
-# Base.metadata.drop_all(engine)
+if __name__ == "__main__":
+    Base.metadata.drop_all(engine)
 
 SessionLocal = sessionmaker(bind=engine)
 

@@ -8,13 +8,14 @@ type Task = {
     created_at: string;
     deadline: string;
     accepted_at: string;
+    completed_at: string;
     budget: number;
     executor_price: number;
     executor_name: string;
     executor_url: string;
     customer_name: string;
     customer_url: string;
-    file_id: string;
+    file_id: number;
 }
 
 

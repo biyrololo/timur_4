@@ -7,11 +7,24 @@ import EditTask from 'pages/EditTask';
 import CreateTask from 'pages/CreateTast';
 import TaskView from 'pages/TaskView';
 import Finances from 'pages/Finances';
+import { useState } from 'react';
+import LoginPage from 'pages/LoginPage';
 
 function App() {
 
   // axios.defaults.baseURL = 'http://localhost:8000/';
   axios.defaults.baseURL = 'http://193.200.74.131:8080/';
+
+  const [is_login, setIsLogin] = useState(localStorage.getItem('token') !== null);
+  axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
+  if(!is_login){
+    return <BrowserRouter>
+      <Routes>
+        <Route path="*" element={<LoginPage on_login={() => setIsLogin(true)}/>}/>
+      </Routes>
+    </BrowserRouter>
+  }
 
   return (
     <BrowserRouter>

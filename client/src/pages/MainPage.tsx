@@ -8,8 +8,31 @@ import { Link } from 'react-router-dom';
 import { Task } from 'types';
 import { TaskCard } from 'components/Task';
 
+type Notification = {
+    id: number;
+    task_id: number;
+    user_id: number;   
+}
 
 export default function MainPage(){
+
+    const [notifications, set_notifications] = useState<Notification[]>([]);
+
+    useEffect(() => {
+        const cancalToken = axios.CancelToken.source();
+
+        axios.get('/notifications', {cancelToken: cancalToken.token})
+        .then(res => {
+            set_notifications(res.data)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+        return () => {
+            cancalToken.cancel()
+        }
+    }, [])
 
     const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -65,7 +88,7 @@ export default function MainPage(){
                     {
                         tasks.map(task => {
                             return (
-                                <TaskCard key={task.id} {...task} handleDelete={handle_delete}/>
+                                <TaskCard key={task.id} {...task} handleDelete={handle_delete} notification={notifications.find(el => el.task_id === task.id) !== undefined}/>
                             )
                         })
                     }

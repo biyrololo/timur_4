@@ -1,0 +1,36 @@
+#user_files{
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+#user_files > div{
+    height: 50px;
+    background-color: gray;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+img.attachment{
+    max-width: min(calc(0.7 * 600px), 70vw);
+    aspect-ratio: 1;
+}
+
+a.attachment{
+    display: block;
+    background-color: gray;
+    padding: 5px;
+    text-decoration: underline;
+    cursor: pointer;
+    color: white;
+}
+
+.comment_message{
+    max-width: calc(min(calc(0.7 * 600px), 70vw) + 20px);
+}

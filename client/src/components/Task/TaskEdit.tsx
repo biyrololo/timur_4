@@ -3,6 +3,11 @@ import { useState,useEffect, useRef } from "react";
 import axios from "axios";
 import { Button, Select, TextField, Typography, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import dayjs, { Dayjs } from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import {CircularProgress} from "@mui/material";
 
 type Props = {
     task_id: string | undefined
@@ -16,6 +21,10 @@ export default function TaskEdit(props: Props) {
 
     const file_input_ref = useRef<HTMLInputElement>(null);
 
+    const [is_file_loaded, setIsFileLoaded] = useState(true);
+
+    const [filename, setFilename] = useState("");
+
     const [task, setTask] = useState<Task | null>(
         {
             id: -1,
@@ -25,13 +34,14 @@ export default function TaskEdit(props: Props) {
             created_at: '',
             deadline: '',
             accepted_at: '',
+            completed_at: '',
             budget: 0,
             executor_price: 0,
             executor_name: '',
             executor_url: '',
             customer_name: '',
             customer_url: '',
-            file_id: '',
+            file_id: -1,
 
         }
     );
@@ -42,6 +52,10 @@ export default function TaskEdit(props: Props) {
         axios.get(`/tasks/${id}`, {cancelToken: cancelToken.token})
         .then(res => {
             setTask(res.data)
+            return axios.get(`/files/${res.data.file_id}/name`, {cancelToken: cancelToken.token})
+        })
+        .then(res => {
+            setFilename(res.data.filename)
         })
         .catch(err => {
             console.log(err)
@@ -81,7 +95,13 @@ export default function TaskEdit(props: Props) {
 
     function handle_edit(){
         if(!task) return;
-        axios.put(`/tasks/${task.id}`, task)
+        const _task : Task = {
+            ...task
+        }
+        if(_task.status === 'завершён' && !_task.completed_at){
+            _task.completed_at = new Date().toISOString().slice(0, 10);
+        }
+        axios.put(`/tasks/${task.id}`, _task)
         .then(res => {
             console.log(res)
             navigate(`/`)
@@ -128,31 +148,43 @@ export default function TaskEdit(props: Props) {
                     <MenuItem value="на утверждении заказчика">На утверждении заказчика</MenuItem>
                     <MenuItem value='доработка'>Доработка</MenuItem>
                     <MenuItem value='завершён'>Завершён</MenuItem>
+                    <MenuItem value='в поиске'>В поиске</MenuItem>
                 </Select>
             </FormControl>
 
-            <TextField
-            label="Дедлайн"
-            variant="outlined"
-            value={task.deadline}
-            onChange={e => setTask({...task, deadline: e.target.value})}
-            autoComplete="off"
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                label="Дедлайн"
+                value={dayjs(task.deadline)}
+                onChange={(newValue: Dayjs | null) => {
+                    if(!newValue) return;
+                    setTask({...task, deadline: newValue.toISOString().slice(0, 10)});
+                }}
+                />
+            </LocalizationProvider>
 
-            <TextField
-            label="Создано"
-            variant="outlined"
-            value={task.created_at}
-            onChange={e => setTask({...task, created_at: e.target.value})}
-            autoComplete="off"
-            />
-            <TextField
-            label="Принято"
-            variant="outlined"
-            value={task.accepted_at}
-            onChange={e => setTask({...task, accepted_at: e.target.value})}
-            autoComplete="off"
-            />
+            
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                label="Создано"
+                value={dayjs(task.created_at)}
+                onChange={(newValue: Dayjs | null) => {
+                    if(!newValue) return;
+                    setTask({...task, created_at: newValue.toISOString().slice(0, 10)});
+                }}
+                />
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                label="Принято"
+                value={dayjs(task.accepted_at)}
+                onChange={(newValue: Dayjs | null) => {
+                    if(!newValue) return;
+                    setTask({...task, accepted_at: newValue.toISOString().slice(0, 10)});
+                }}
+                />
+            </LocalizationProvider>
 
             <TextField
             label="Бюджет"
@@ -202,12 +234,13 @@ export default function TaskEdit(props: Props) {
             autoComplete="off"
             />
 
-            <Button variant="outlined" onClick={()=> file_input_ref.current?.click()}>
+            <Button variant="outlined" onClick={()=> file_input_ref.current?.click()} disabled={!is_file_loaded}>
                 <input type="file" hidden ref={file_input_ref} onChange={handle_change_file}/>
-                <span>Загрузить файл ТЗ</span>
+                <span>{filename ? filename : 'Загрузить файл ТЗ'}</span>
+                {!is_file_loaded && <CircularProgress size={24} />}
             </Button>
 
-            <Button variant="contained" onClick={handle_edit}>
+            <Button variant="contained" onClick={handle_edit} disabled={!is_file_loaded}>
                 Сохранить
             </Button>
         </main>

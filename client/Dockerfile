@@ -5,16 +5,16 @@ FROM node:18.16.0-alpine
 WORKDIR /app
 
 # Копируем package.json и package-lock.json в директорию контейнера
-COPY package*.json ./
+# COPY package*.json ./
 
 # Устанавливаем зависимости
-RUN npm install
+# RUN npm install
 
 # Копируем все файлы приложения в директорию контейнера
 COPY . .
 
 # Собираем React-приложение
-RUN npm run build
+# RUN npm run build
 
 # Устанавливаем serve глобально внутри контейнера
 RUN npm install -g serve

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const CardDataRow = styled(Typography)(
     {
@@ -20,26 +21,28 @@ const CardDataRow = styled(Typography)(
 
 type Props = Task & {
     handleDelete: (id: number) => void;
-    view?: boolean
+    view?: boolean;
+    notification?: boolean
 }
 
 export default function TaskCard(task: Props) {
     
-    // const [fileName, setFileName] = useState('');
+    const [fileName, setFileName] = useState('');
 
-    // useEffect(() => {
-    //     const cancelToken = axios.CancelToken.source();
-    //     axios.get(`/files/${task.file_id}`, {cancelToken: cancelToken.token})
-    //     .then(res => {
-    //         setFileName(res.data.filepath)
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
-    //     return () => {
-    //         cancelToken.cancel();
-    //     }
-    // })
+    useEffect(() => {
+        if(!task.view) return;
+        const cancelToken = axios.CancelToken.source();
+        axios.get(`/files/${task.file_id}/name`, {cancelToken: cancelToken.token})
+        .then(res => {
+            setFileName(res.data.filename)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        return () => {
+            cancelToken.cancel();
+        }
+    })
 
     function downloadFile() {
         const url = `/files/${task.file_id}`;
@@ -49,7 +52,7 @@ export default function TaskCard(task: Props) {
                 const blob = new Blob([response.data], { type: response.headers['content-type'] });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = task.file_id;
+                link.download = fileName;
                 link.click();
             })
             .catch((error) => {
@@ -59,6 +62,13 @@ export default function TaskCard(task: Props) {
 
     return (
         <Card className="task_card">
+            {
+                task.notification && (
+                    <section className="notification">
+                        <NotificationsIcon style={{fontSize: '60px', color: '#444dfa'}}/>
+                    </section>
+                )
+            }
             <CardContent style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
                 <CardDataRow gutterBottom variant="h4">
                     {task.title}
@@ -83,7 +93,7 @@ export default function TaskCard(task: Props) {
                     Оплата исполнителю: {task.executor_price} ₽
                 </CardDataRow>
                 <CardDataRow variant="body2" color="text.secondary">
-                    <TimelineIcon/> Статус: <span style={{color: '#0092CC'}}>{task.status}</span>
+                    <TimelineIcon/> Статус: <span style={{color: '#0092CC'}}>{task.status} {task.status === 'завершён' && `(${task.completed_at})`}</span>
                 </CardDataRow>
                 <CardDataRow variant="body2" color="text.secondary">
                     <CalendarMonthIcon /> Создан: {task.created_at}
@@ -100,7 +110,7 @@ export default function TaskCard(task: Props) {
                     <CardDataRow variant="body2" color="text.secondary">
                         {task.description}
                     </CardDataRow>
-                    <Button size="small" variant="contained" color="primary" onClick={downloadFile}>Скачать файл {task.file_id}</Button>
+                    <Button size="small" variant="contained" color="primary" onClick={downloadFile}>Скачать файл {fileName}</Button>
                     </>
                 }
             </CardContent>

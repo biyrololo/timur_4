@@ -15,17 +15,7 @@ services:
     restart: on-failure
     ports:
       - "8080:8080"
-    command: uvicorn main:app --host 0.0.0.0 --port 8080
-
-  posrgres:
-    image: 'postgres:15'
-    ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
     volumes:
-      - pgdata:/var/lib/postgresql/data
-volumes:
-  pgdata: {}
+      - ./files:/app/server/files
+      - ./attachments:/app/server/attachments
+    command: uvicorn main:app --host 0.0.0.0 --port 8080
