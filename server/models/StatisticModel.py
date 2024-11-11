@@ -63,7 +63,7 @@ class StatisticModel(Base):
 
         return statistic_.json()
 
-    def json(self) -> dict[str, str | int]:
+    def json(self):
         return {
             "id": self.id,
             "name": self.name,

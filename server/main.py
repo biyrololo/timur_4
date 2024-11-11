@@ -152,7 +152,7 @@ async def upload_file(uploaded_file: UploadFile, pass_token: HTTPAuthorizationCr
     return file
 
 @app.get('/attachments/{file_id}')
-async def get_file(file_id: str, db=Depends(get_db)) -> FileResponse:
+async def get_file(file_id: str, db=Depends(get_db)):
     try:
         file = AttachmentModel.get(db, file_id)
         return FileResponse(f"server/attachments/{file_id}/{file['filename']}")

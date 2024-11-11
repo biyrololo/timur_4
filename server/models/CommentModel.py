@@ -31,7 +31,7 @@ class CommentModel(Base):
         db.query(cls).filter(cls.id == id).delete()
         db.commit()
 
-    def json(self) -> dict[str, str | int]:
+    def json(self):
         return {
             "id": self.id,
             "task_id": self.task_id,

@@ -14,7 +14,7 @@ class AttachmentModel(Base):
         db.commit()
         return attachment_.json()
     
-    def json(self) -> dict[str, str | int]:
+    def json(self):
         return {
             "id": self.id,
             "filename": self.filename
