@@ -124,3 +124,35 @@ main{
   right: 10px;
   top: 10px;
 }
+
+@media (width > 600px){
+  .rdrCalendarWrapper{
+    max-width: 664px;
+  }
+}
+
+@media (width <= 600px){
+  .rdrCalendarWrapper{
+    max-width: 332px;
+  }
+}
+
+.rdrCalendarWrapper, .rdrDateDisplayWrapper, .rdrDateDisplayItem, .rdrNextPrevButton{
+  background: none !important;
+}
+
+.rdrDay:not(.rdrDayPassive) .rdrDayNumber span{
+  color: white !important;
+}
+
+.rdrDay.rdrDayPassive .rdrDayNumber span{
+  color: gray !important;
+}
+
+.rdrDateDisplayItem input, .rdrMonthPicker select, .rdrYearPicker select{
+  color: white !important;
+}
+
+.rdrNextPrevButton i{
+  border-color: transparent transparent transparent white;
+}

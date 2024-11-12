@@ -10,18 +10,6 @@ users = [
         "password_hash": '4e3789c266504a8ae5f7b8c82181632c0112fb198c97e7e0a10a893285bb9669',
         "id": 2,
         'username': 'Алексей'
-    },
-    {
-        "name": 'gleb',
-        "password_hash": '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5',
-        "id": 3,
-        'username': 'Глеб'
-    },
-    {
-        'name': 'q',
-        'password_hash': '8e35c2cd3bf6641bdb0e2050b76932cbb2e6034a0ddacc1d9bea82a6ba57f7cf',
-        'id': 4,
-        'username': 'Юра'
     }
 ]
 

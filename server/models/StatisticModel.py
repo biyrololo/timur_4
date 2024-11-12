@@ -6,10 +6,11 @@ class StatisticModel(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     value = Column(Integer, nullable=False)
+    date = Column(String, nullable=False)
 
     @classmethod
     def create(cls, db, statistic):
-        s = cls(name=statistic['name'], value=statistic['value'])
+        s = cls(name=statistic.name, value=statistic.value, date=statistic.date)
         db.add(s)
         db.commit()
         return s.json()
@@ -67,5 +68,6 @@ class StatisticModel(Base):
         return {
             "id": self.id,
             "name": self.name,
-            "value": self.value
+            "value": self.value,
+            "date": self.date
         }

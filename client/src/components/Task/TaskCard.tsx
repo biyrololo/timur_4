@@ -110,7 +110,7 @@ export default function TaskCard(task: Props) {
                     <CardDataRow variant="body2" color="text.secondary">
                         {task.description}
                     </CardDataRow>
-                    <Button size="small" variant="contained" color="primary" onClick={downloadFile}>Скачать файл {fileName}</Button>
+                    <Button size="small" variant="contained" color="primary" onClick={downloadFile} disabled={!fileName}>Скачать файл {fileName || 'НЕТ ФАЙЛА'}</Button>
                     </>
                 }
             </CardContent>

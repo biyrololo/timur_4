@@ -129,6 +129,8 @@ async def get_file_name(file_id: str, pass_token: HTTPAuthorizationCredentials =
     user = pass_token.credentials.split(":")
     if(not check_password(name=user[0], password=user[1])):
         raise HTTPException(status_code=401, detail="Unauthorized")
+    if file_id == '-1':
+        raise HTTPException(status_code=404, detail="File not found")
     file = FileModel.get_by_id(db, file_id)
     if file is None:
         raise HTTPException(status_code=404, detail="File not found")
@@ -182,11 +184,6 @@ def get_statistic_endpoint(pass_token: HTTPAuthorizationCredentials = Depends(se
     user = pass_token.credentials.split(":")
     if(not check_password(name=user[0], password=user[1])):
         raise HTTPException(status_code=401, detail="Unauthorized")
-    others_expenses_all = StatisticModel.get_all(db)
-    if(len(others_expenses_all) == 0):
-        others_expenses_all = []
-        others_expenses_all.append(StatisticModel.create(db, {'name': 'Реклама', 'value': 0}))
-        others_expenses_all.append(StatisticModel.create(db, {'name': 'Прочие расходы', 'value': 0}))
     tasks = TaskModel.get_all(db)
     expenses = 0
     profit = 0
@@ -206,6 +203,15 @@ def get_statistic_endpoint(pass_token: HTTPAuthorizationCredentials = Depends(se
         "other": others_expenses
     }
 
+@app.post('/statistic')
+def create_statistic_endpoint(statistic: StatisticCreateSchema, pass_token: HTTPAuthorizationCredentials = Depends(security), db=Depends(get_db)):
+    user = pass_token.credentials.split(":")
+    if(not check_password(name=user[0], password=user[1])):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    st = StatisticModel.create(db, statistic)
+    return st
+
+
 @app.put('/statistic/{id}')
 def set_statistic_endpoint(id, statistic: StatisticSchema, pass_token: HTTPAuthorizationCredentials = Depends(security), db=Depends(get_db)):
     user = pass_token.credentials.split(":")
@@ -214,6 +220,12 @@ def set_statistic_endpoint(id, statistic: StatisticSchema, pass_token: HTTPAutho
     s = StatisticModel.increment(db, statistic, id)
     return s
 
+@app.delete('/statistic/{id}')
+def set_statistic_endpoint(id, pass_token: HTTPAuthorizationCredentials = Depends(security), db=Depends(get_db)):
+    user = pass_token.credentials.split(":")
+    if(not check_password(name=user[0], password=user[1])):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    StatisticModel.delete(db, id)
 @app.get('/notifications')
 def get_notifications_endpoint(pass_token: HTTPAuthorizationCredentials = Depends(security), db=Depends(get_db)):
     user = pass_token.credentials.split(":")

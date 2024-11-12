@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import axios from 'axios';
 import {Routes, Route, BrowserRouter} from 'react-router-dom';
 import MainPage from 'pages/MainPage';
@@ -9,6 +8,9 @@ import TaskView from 'pages/TaskView';
 import Finances from 'pages/Finances';
 import { useState } from 'react';
 import LoginPage from 'pages/LoginPage';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import './App.css';
 
 function App() {
 
